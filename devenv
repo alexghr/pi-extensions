@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+exec nix run github:NixOS/nixpkgs/ac6b2166e7a9375683b8e98f860f273222337b16#devenv -- "$@"
