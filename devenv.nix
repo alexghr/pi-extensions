@@ -1,15 +1,18 @@
-{ pkgs, inputs, ... }:
+{ pkgs, config, lib, inputs, ... }:
 let
   agents = import inputs.agents { inherit pkgs; };
 in
 {
-  languages.javascript = {
-    enable = true;
-    nodejs.enable = true;
-    npm.enable = true;
+  packages = [agents.pi];
+  languages = {
+    javascript = {
+      enable = true;
+      nodejs.enable = true;
+      npm.enable = true;
+      npm.install.enable = true;
+    };
+    typescript.enable = true;
   };
 
-  languages.typescript.enable = true;
-
-  packages = [agents.pi];
+  env.PATH = "$PATH:${lib.escapeShellArg config.devenv.root}";
 }
