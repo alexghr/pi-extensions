@@ -3,6 +3,7 @@
   "private": "true",
   "devDependencies": {
     "@earendil-works/pi-agent-core": "^1.6.1",
+    "@earendil-works/pi-ai": "^1.6.1",
     "@earendil-works/pi-coding-agent": "^1.6.1",
     "oxfmt": "^0.80.0",
     "oxlint": "^1.95.0",
