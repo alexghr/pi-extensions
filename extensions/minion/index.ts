@@ -1,13 +1,14 @@
 import { type Model } from "@earendil-works/pi-ai";
 import {
   createCodingTools,
+  createReadOnlyTools,
   type ExtensionAPI,
   type ExtensionToolContext,
 } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
 import { Minion } from "./minion";
 
-export default function (pi: ExtensionAPI) {
+export default function(pi: ExtensionAPI) {
   pi.registerTool({
     name: "minion",
     label: "Minion",
@@ -24,19 +25,23 @@ export default function (pi: ExtensionAPI) {
           default: "off",
         }),
       ),
+      readOnly: Type.Optional(
+        Type.Boolean({
+          description: "Whether to give it only read only tools. True if omitted",
+          default: true,
+        }),
+      ),
     }),
 
     async execute(_toolCallId, args, signal, _onUpdate, ctx) {
       signal?.throwIfAborted();
 
-      const model = resolveModel(args.model, ctx);
+      args.thinkingLevel ??= "off";
+      args.readOnly ??= true;
 
-      const minion = new Minion(
-        model,
-        args.thinkingLevel,
-        ctx.modelRegistry,
-        createCodingTools(ctx.cwd),
-      );
+      const model = resolveModel(args.model, ctx);
+      const tools = args.readOnly ? createReadOnlyTools(ctx.cwd) : createCodingTools(ctx.cwd);
+      const minion = new Minion(model, args.thinkingLevel, ctx.modelRegistry, tools);
 
       return await minion.execute(args.prompt, signal);
     },
